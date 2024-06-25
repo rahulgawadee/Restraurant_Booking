@@ -1,0 +1,25 @@
+1. frontend banvycha folder
+2. nanatr npm create vite@latest use krych
+3. npm install
+4. install dependencies :  npm i react-router-dom axios react-icons react-scroll hot-toast
+5.import react router dom  in App.jsx
+6. use the routes router in App.jsx
+        --> Ata routes mhnje ki dusre page link karne ek-mekanna... je apan adhi use kelela hota..
+            i.e Import karyche pages aani Routes syntax vapryche
+7. Ata App.css aayti bhetli paste keli same for RestApi.json  ani Public madhe images downlod krun takyche
+8. Ata Components navacha folder banvycha ani tyat Hero section and all banvycha
+9.Herosection madhe apan Herosection tayyar kela ani mag tyala import kela app.jsx madhey
+10.Navbar create karych ani tyala Herosection madhe import karych 
+        tyamadhe details dilet code explain kelela ahe...
+11.Ata Qualitiees madhr pan same
+12. Whoweare madhe navin concept ahe Slice naavachii ti rembember
+13. ata main components banavnar ahe aapan :
+                Reservation.jsx
+
+       --->Import hiOutlineArrowNarrowRight from icons
+                then import axios,usestate,toast, usenavigate
+
+       --->we will use the firstName,lastname email and all
+       then use Const Navigate -=usenavigate() which we have imported previously..
+       ---> ata Data Backend la pathvychay maag apan use karnar function handleReservation navacha ani tyala async ani await lavnar 
+                ata tyat page reload na hova kuthe he click kele ki tyassthi apan e.preventDefault() use karnar ahot..

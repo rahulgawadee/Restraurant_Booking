@@ -1,0 +1,144 @@
+1. First Run the npm init command in the terminal
+2. Mag apan npm i cors dotenv express mongoose validator he command run karuyaat
+            ---> cors : attach the frontend and the backend
+            ---> dotenv:  loads environment variables 
+            ---> express: installs the dependencies of the express js 
+            ---> mongoose : Mongoose js chi laibrary install
+            ---> validator : This library validates and sanitizes strings only
+3.Add the  "type":"module", in packkage.json.
+
+4. Add the  "scripts": {
+    "start": "node server.js",
+    "dev":"nodemon server.js"
+  },
+  to the package.json
+
+        --->
+        
+        "start": This script is typically used to start your application in a production environment. When you run npm start in the terminal, it executes node server.js, which starts your Node.js application.
+
+        "dev": This script is commonly used during development. It uses nodemon, which is a tool that helps in automatically restarting the Node.js application when file changes are    detected. So, when you run npm run dev in the terminal, it executes nodemon server.js,enabling automatic restarting of the server during development whenever changes are made to the server-side code.
+
+5. Create the folder Config named and Create the file called - config.env in it and set the FRONTEND_URL in it 
+6. Then we go to Mongodb Atlas and make the new connection
+7. Create new file name app.js and server.js App madhe app.js la export karcych anii Server madhe import karcych Ani server.js maadhe Enviornment variable la setup karcych
+8. app.js madhe apan dotenv import karnar ani mag tithe path denar tyacha
+9. npm run dev karun pahycha Tithe disply hoil ki server is running on port 4000... If this is shown means our Enviornment variable is working in Well..
+
+***** Now time to connect backend to frontend *******
+
+10. Got to App.js and type...
+
+app.use(cors({
+    origin: [process.env.FRONTEND_URL], ----> Isme Uss forntend ka path dena hai as given in main file.. Jar aplyala more than 1 frontend join karych asel tar , lavun karu shaktoo
+    methods:[""],--->Backend and frontend madhekonte method use karnar (eg. POST,CREATE,etc)  POst use karenege joo humara Data Backend me bhejenga
+    credentials:true
+}))
+
+11. Now add 
+ 
+ app.use(express.json()); ----> string la object madhe convert karnyasathii express,json use karto
+
+12. Create new Database folder 
+                and create the file in it named dbConnection.js 
+                    ---> import the "mongoose" in it
+                    ---> setup the connection by 
+                        export dbConnection({
+
+                        })
+                        mongoose.connect(process.env.MONGO_URI, {
+                         dbName: "RESTRAURANT",
+                        })
+
+            use .then(connect sucessfully)
+                and .catch(err(
+                    not connected --> error dakhavaa kay alay te
+                ))
+13.export karycha mag tyala ani app.js madhe import....
+14.ek error me face kela toh mhnje error ala Database connection madhe mongodb cha password sagla aplhatbets kiva numbers pahije special characters nahii mg Normal hoil connect..
+
+
+15.Ata Error handling karych :
+        --> Create a folder named error ani tyaat error.js file create karych..
+        --> Write the code and export the file named class i.e ErrorHandler
+    --> And Import it to App.js
+
+Ani Middleware la Import karycha App.js madhey..
+
+16.Ata Create karycha Route navach Folder : Ani tyamadhey reservationroute.js file create karycchi
+                tyat express import kara ani tyat router navacha function crraete karea ani tyoo App.js madhey import kara
+
+17.Navin folder create karyche viz. controller,models
+        -->models madhe reservationScheme.js file banva ani tya madhe import kara Moongose
+        and import validator ani tyala import export kara
+
+            Hyamadhe declare kara first name ,lastname and all type of string name length and all ani Email la validator lavycha 
+            ani phone number vagare pan add karu shktoo..
+
+
+18. Ata jo Models madhe apn Reservation export kel te Controller maadhe reservation.js madhey Import karych
+
+19. Now keep in mind that error folder madhe error.js banvla hot tar te error.js export kara Controller madhe
+    he krtoy apan karan code chi error handling karychi ahe aplayala...
+
+    Tya controller madhe apan try catch block lavnar...
+
+20.Ata Routes madhey jaych anii nantar tyat Route define karnr controller la tyat import karych.. 
+    --> router.post('/send',sendReservation ); he karun Data post karych mhnje send hoil..
+21. check karych postman Api madhe ki ky error ahe ki nahi mhanun...\
+    tyasathi apan 
+    app.js madhey 
+
+    app.use('/api/v1/reservation',  ReservationRouter) 
+    he use kela hota tar he https//localhost:4000//api/v1/reservation/send paste karych
+
+post use kelay so te select kary ani raw data in body and clivk on send
+
+22. Tithe ahe te fill karun gheych..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    import { json } from "express";
+import ErrorHandler from "../error/error.js";
+import {Reservation} from "../models/reservationSchema.js";
+
+
+export const sendReservation = async (res,req,next) => {
+
+    const {firstName, lastName, email, phone, date, time} = req.body;
+        if(!firstName || !lastName || !email || !phone ||date || !time ) {              
+            return next(new ErrorHandler("Please Fill full Reservation Form !", 400));
+        }     
+        
+        //Here, the code checks if any of the required fields (firstName, lastName, email, phone, date, time) are missing or empty. If any of them are missing or empty, it returns an error using the next function with an instance of ErrorHandler and a status code of 400 (Bad Request).
+
+        try {
+            await Reservation.create(firstName,lastName,email,phone,date,time);         //If an error occurs during the creation process, it's caught and checked if it's a validation error. If it is, it extracts the error messages and returns them using the next function with an instance of ErrorHandler and a status code of 400.
+            
+            req.status(200),
+                json({
+                    sucess:true,
+                    message:"Reservation Done Sucessfully !",
+                });
+        } catch(error) {
+            if(error.name === "vaildationError") {
+                const vaildationErrors = Object.values(error.errors).map(
+                    (err) => err.message
+                );
+                return next(new ErrorHandler(vaildationErrors.json(" , "),  400 ));
+            }
+        }
+};
